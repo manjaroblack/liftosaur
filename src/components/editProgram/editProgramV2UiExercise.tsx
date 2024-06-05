@@ -1,6 +1,6 @@
 import { lb } from "lens-shmens";
 import { h, JSX, Fragment } from "preact";
-import { Exercise } from "../../models/exercise";
+import { Exercise, equipmentName } from "../../models/exercise";
 import { PlannerProgramExercise } from "../../pages/planner/models/plannerProgramExercise";
 import { focusedToStr, IPlannerProgramExercise, IPlannerState, IPlannerUi } from "../../pages/planner/models/types";
 import { PlannerKey } from "../../pages/planner/plannerKey";
@@ -38,7 +38,10 @@ export function EditProgramV2UiExercise(props: IEditProgramV2UiExerciseProps): J
   const weekIndex = week - 1;
   const dayIndex = dayInWeek - 1;
   const exercise = Exercise.findByName(plannerExercise.name, props.settings.exercises);
-  const exerciseType = exercise != null ? { id: exercise.id, equipment: plannerExercise.equipment } : undefined;
+  const exerciseType =
+    exercise != null
+      ? { id: exercise.id, equipment: plannerExercise.equipment || exercise.defaultEquipment }
+      : undefined;
   const warmupSets =
     PlannerProgramExercise.warmups(plannerExercise) ||
     (exercise != null ? PlannerProgramExercise.defaultWarmups(exercise, props.settings) : []);
@@ -152,6 +155,9 @@ export function EditProgramV2UiExercise(props: IEditProgramV2UiExerciseProps): J
           <div data-cy="planner-ui-exercise-name">
             {plannerExercise.label ? `${plannerExercise.label}: ` : ""}
             {plannerExercise.name}
+            {plannerExercise.equipment != null && plannerExercise.equipment !== exercise?.defaultEquipment && (
+              <div className="text-xs text-grayv2-main">{equipmentName(plannerExercise.equipment)}</div>
+            )}
           </div>
           <div>
             <button

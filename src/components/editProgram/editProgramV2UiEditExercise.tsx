@@ -45,7 +45,10 @@ export function EditProgramV2UiEditExercise(props: IEditProgramV2UiEditExerciseP
   const weekIndex = week - 1;
   const dayIndex = dayInWeek - 1;
   const exercise = Exercise.findByName(plannerExercise.name, props.settings.exercises);
-  const exerciseType = exercise != null ? { id: exercise.id, equipment: plannerExercise.equipment } : undefined;
+  const exerciseType =
+    exercise != null
+      ? { id: exercise.id, equipment: plannerExercise.equipment || exercise.defaultEquipment }
+      : undefined;
   const repeatStr = PlannerProgramExercise.repeatToRangeStr(plannerExercise);
   const order = plannerExercise.order !== 0 ? plannerExercise.order : undefined;
   const orderAndRepeat = [order, repeatStr].filter((s) => s).join(", ");

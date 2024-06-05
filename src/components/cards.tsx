@@ -26,6 +26,8 @@ import { Program } from "../models/program";
 import { lb } from "lens-shmens";
 import { Features } from "../utils/features";
 import { EditProgram } from "../models/editProgram";
+import { Exercise } from "../models/exercise";
+import { Subscriptions } from "../utils/subscriptions";
 
 interface ICardsViewProps {
   history: IHistoryRecord[];
@@ -126,6 +128,10 @@ export const CardsView = memo(
           if (props.program) {
             programExercise = props.program.exercises.find((e) => e.id === entry.programExerciseId);
           }
+          const currentGymId = props.settings.currentGymId || props.settings.gyms[0]?.id || "";
+          const currentEquipment =
+            props.settings.exerciseData[Exercise.toKey(entry.exercise)]?.equipment?.[currentGymId];
+          const hidePlatesCalculator = !currentEquipment && Subscriptions.hasSubscription(props.subscription);
 
           return (
             <ExerciseView
@@ -139,6 +145,7 @@ export const CardsView = memo(
               settings={props.settings}
               index={index}
               entry={entry}
+              hidePlatesCalculator={hidePlatesCalculator}
               programExercise={programExercise}
               program={props.program}
               subscription={props.subscription}
